@@ -1,7 +1,7 @@
 # Create a Docker image for the application
 
 # Use the official image as a parent image
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
 # Set the working directory
 WORKDIR /app
