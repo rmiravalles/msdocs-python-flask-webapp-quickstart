@@ -1,22 +1,25 @@
-# Create a Docker image for the application
+# Use official Python runtime as the base image
+FROM python:3.12-slim
 
-# Use the official image as a parent image
-FROM python:3.12-alpine
-
-# Set the working directory
+# Set working directory in the container
 WORKDIR /app
 
-# Copy the requirements file into the container
+# Copy the dependencies file to the working directory
 COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
-RUN pip3 install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
+# Copy the content of the local src directory to the working directory
 COPY . .
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=production
+ENV PORT=80
 
-# Run app.py when the container launches
-CMD ["python", "app.py"]
+# Expose port 80
+EXPOSE 80
+
+# Command to run the application
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
