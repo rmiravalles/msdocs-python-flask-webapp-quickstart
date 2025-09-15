@@ -1,0 +1,22 @@
+name: Issue Workflow
+
+on:
+  push:
+    paths:
+      - '.github/workflows/issue-wf.yaml'
+  workflow_dispatch: # manual trigger
+
+jobs:
+  cli:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - run: env
+      - run: gh --version
+      - run: gh auth status
+      - run: gh repo list
+      - run: gh issue list --limit 5
+      - run: gh workflow list
+      - run: gh api /repos/:owner/:repo/actions/workflows
