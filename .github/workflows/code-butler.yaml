@@ -7,10 +7,11 @@ permissions:
 on:
   issue_comment:
     types: [created]
+  pull_request:
 
 jobs:
   review:
-    if: startsWith(github.event.comment.body, '/review')
+    if: contains(github.event.comment.body, '/review')
     runs-on: ubuntu-latest
     steps:
       - uses: ca-dp/code-butler@v1
@@ -18,9 +19,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           cmd: review
-          lang: en
   chat:
-    if: startsWith(github.event.comment.body, '/chat')
+    if: contains(github.event.comment.body, '/chat')
     runs-on: ubuntu-latest
     steps:
       - uses: ca-dp/code-butler@v1
@@ -29,4 +29,3 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           cmd: chat
           comment_body: ${{ github.event.comment.body }}
-          lang: en
