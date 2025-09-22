@@ -24,7 +24,7 @@ jobs:
     - name: Log in to Azure Container Registry
       uses: azure/docker-login@v2
       with:
-        login-server: pythonflaskacr.azurecr.io
+        login-server: ${{ vars.LOGIN_SERVER}}
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
         
@@ -33,8 +33,8 @@ jobs:
       with:
         context: .
         push: true
-        tags: pythonflaskacr.azurecr.io/flask-app:${{ github.sha }}
-        cache-from: type=registry,ref=pythonflaskacr.azurecr.io/flask-app:latest
+        tags: ${{ vars.LOGIN_SERVER}}/flask-app:${{ github.sha }}
+        cache-from: type=registry,ref=${{ vars.LOGIN_SERVER}}/flask-app:latest
         cache-to: type=inline
         
     - name: Tag as latest
@@ -42,8 +42,8 @@ jobs:
       with:
         context: .
         push: true
-        tags: pythonflaskacr.azurecr.io/flask-app:latest
-        cache-from: type=registry,ref=pythonflaskacr.azurecr.io/flask-app:${{ github.sha }}
+        tags: ${{ vars.LOGIN_SERVER}}/flask-app:latest
+        cache-from: type=registry,ref=${{ vars.LOGIN_SERVER}}/flask-app:${{ github.sha }}
         cache-to: type=inline
 
   deploy:
@@ -60,5 +60,4 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: pythonflaskcont
-        images: pythonflaskacr.azurecr.io/flask-app:${{ github.sha }}
-        resource-group-name: pythonflaskcont_group
+        images: ${{ vars.LOGIN_SERVER}}/flask-app:${{ github.sha }}
